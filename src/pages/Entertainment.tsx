@@ -1,28 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import BlogItem from "@/components/BlogItem";
 import ViewBlog from "@/components/ViewBlog";
-import SearchModal from "@/components/SearchModal";
 import moment from "moment";
+import { articleObject, responseObject } from ".";
 
-export interface articleObject {
-  title: string;
-  description: string;
-  url: string;
-  imgUrl: string;
-  date: string;
-}
-
-export interface responseObject {
-  title: string;
-  excerpt: string;
-  url: string;
-  thumbnail: string;
-  date: string;
-}
-
-export default function Home() {
-  const [displaySearch, setDisplaySearch] = useState<boolean>(false);
+function Entertainment() {
   const [displayViewModal, setDisplayViewModal] = useState<boolean>(false);
   const [articles, setArticles] = useState<articleObject[]>([]);
   const [selectedArticle, setSelectedArticle] = useState<articleObject>({
@@ -33,16 +16,10 @@ export default function Home() {
     date: "",
   });
 
-  const handleShortcutKey = useCallback((event: KeyboardEvent) => {
-    if (event.ctrlKey && event.key === "k") {
-      setDisplaySearch(true);
-    }
-  }, []);
-
   const fetchArticle = async () => {
     try {
       const request = await fetch(
-        "https://news-api14.p.rapidapi.com/v2/trendings?topic=General&language=en&country=ph",
+        "https://news-api14.p.rapidapi.com/v2/trendings?topic=Entertainment&language=en&country=ph",
         {
           method: "GET",
           headers: {
@@ -69,18 +46,13 @@ export default function Home() {
       console.error(error);
     }
   };
-  
 
   useEffect(() => {
     fetchArticle();
   }, []);
-  useEffect(() => {
-    document.addEventListener("keydown", handleShortcutKey);
-  }, [handleShortcutKey]);
 
   return (
     <div className="h-screen overflow-hidden">
-      {displaySearch && <SearchModal closeModal={setDisplaySearch} />}
       {displayViewModal && (
         <ViewBlog
           title={selectedArticle.title}
@@ -91,9 +63,9 @@ export default function Home() {
           closeModal={setDisplayViewModal}
         />
       )}
-      <Navbar openModal={setDisplaySearch} />
+      <Navbar />
       <div className="flex flex-col bg-white px-8 pt-8 gap-[20px] h-full overflow-auto">
-        <h3 className="text-black font-bold text-[31px]">Trending News</h3>
+        <h3 className="text-black font-bold text-[31px]">Entertainment</h3>
         <div className="flex flex-wrap justify-start gap-[30px] px-[10px] pt-[10px] pb-32 w-full h-fit">
           {articles.map((data, id) => (
             <BlogItem
@@ -111,3 +83,5 @@ export default function Home() {
     </div>
   );
 }
+
+export default Entertainment;
