@@ -1,13 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import type { InferGetStaticPropsType, GetStaticProps } from "next";
 import Navbar from "@/components/Navbar";
 import BlogItem from "@/components/BlogItem";
 import ViewBlog from "@/components/ViewBlog";
 import moment from "moment";
+import SearchModal from "@/components/SearchModal";
 import { articleObject, responseObject } from ".";
 
-function Sports() {
+export const getStaticProps = (async () => {
+  const request = await fetch(
+    "https://news-api14.p.rapidapi.com/v2/trendings?topic=Sports&language=en&country=ph",
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-rapidapi-key": "c669122751msh09833f2d21d4c96p158155jsn20321158a9c2",
+        "x-rapidapi-host": "news-api14.p.rapidapi.com",
+      },
+    }
+  );
+
+  const response = await request.json();
+
+  return { props: { response } };
+}) satisfies GetStaticProps<{ response: responseObject[] }>;
+
+function Sports({ response }: InferGetStaticPropsType<typeof getStaticProps>) {
+  const [displaySearch, setDisplaySearch] = useState<boolean>(false);
   const [displayViewModal, setDisplayViewModal] = useState<boolean>(false);
-  const [articles, setArticles] = useState<articleObject[]>([]);
+  const articles: responseObject[] = response.data;
   const [selectedArticle, setSelectedArticle] = useState<articleObject>({
     title: "",
     description: "",
@@ -16,43 +37,20 @@ function Sports() {
     date: "",
   });
 
-  const fetchArticle = async () => {
-    try {
-      const request = await fetch(
-        "https://news-api14.p.rapidapi.com/v2/trendings?topic=Sports&language=en&country=ph",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "x-rapidapi-key":
-              "c669122751msh09833f2d21d4c96p158155jsn20321158a9c2",
-            "x-rapidapi-host": "news-api14.p.rapidapi.com",
-          },
-        }
-      );
-
-      const response = await request.json();
-      const data: articleObject[] = response.data.map(
-        (item: responseObject) => ({
-          title: item.title,
-          description: item.excerpt,
-          url: item.url,
-          imgUrl: item.thumbnail,
-          date: item.date,
-        })
-      );
-      setArticles(data);
-    } catch (error) {
-      console.error(error);
+  const handleShortcutKey = useCallback((event: KeyboardEvent) => {
+    if (event.ctrlKey && event.key === "k") {
+      event.preventDefault();
+      setDisplaySearch(true);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    fetchArticle();
-  }, []);
+    document.addEventListener("keydown", handleShortcutKey);
+  }, [handleShortcutKey]);
 
   return (
     <div className="h-screen overflow-hidden">
+      {displaySearch && <SearchModal closeModal={setDisplaySearch} />}
       {displayViewModal && (
         <ViewBlog
           title={selectedArticle.title}
@@ -63,7 +61,7 @@ function Sports() {
           closeModal={setDisplayViewModal}
         />
       )}
-      <Navbar />
+      <Navbar openModal={setDisplaySearch} />
       <div className="flex flex-col bg-white px-8 pt-8 gap-[20px] h-full overflow-auto">
         <h3 className="text-black font-bold text-[31px]">Sports</h3>
         <div className="flex flex-wrap justify-start gap-[30px] px-[10px] pt-[10px] pb-32 w-full h-fit">
@@ -71,7 +69,7 @@ function Sports() {
             <BlogItem
               key={id}
               title={data.title}
-              imgSrc={data.imgUrl}
+              imgSrc={data.thumbnail}
               time={moment(data.date).fromNow()}
               displayModal={setDisplayViewModal}
               selectItem={setSelectedArticle}

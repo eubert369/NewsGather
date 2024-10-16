@@ -25,7 +25,12 @@ function SearchModal({
         <div className="flex justify-between px-[25px] pt-[25px] pb-[15px] border-b border-[#8A8A8A]">
           <div className="w-full flex gap-[10px]">
             <div className="w-[25px] h-[25px] relative">
-              <Image fill src={"/assets/search-icon.svg"} alt="image" />
+              <Image
+                fill
+                sizes="100%"
+                src={"/assets/search-icon.svg"}
+                alt="image"
+              />
             </div>
             <input
               className="w-full outline-none text-black"
