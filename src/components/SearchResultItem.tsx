@@ -1,17 +1,43 @@
 import React from "react";
 import Image from "next/image";
+import { responseObject, articleObject } from "@/pages";
+
+interface props {
+  imgSrc: string;
+  title: string;
+  date: string;
+  getArticle: responseObject;
+  selectItem: (value: articleObject) => void;
+  closeSearch: (value: boolean) => void;
+  openBlogItem: (value: boolean) => void;
+}
 
 function SearchResultItem({
   imgSrc,
   title,
   date,
-}: {
-  imgSrc: string;
-  title: string;
-  date: string;
-}) {
+  getArticle,
+  selectItem,
+  closeSearch,
+  openBlogItem,
+}: props) {
+  const handleClick = () => {
+    selectItem({
+      title: title,
+      description: getArticle.excerpt,
+      url: getArticle.url,
+      imgUrl: getArticle.thumbnail,
+      date: getArticle.date,
+    });
+    closeSearch(true);
+    openBlogItem(true);
+  };
+
   return (
-    <button className="w-full h-fit flex p-[10px] gap-[10px]">
+    <button
+      onClick={handleClick}
+      className="w-full h-fit flex p-[10px] gap-[10px] hover:bg-gray-300 rounded-md"
+    >
       <div className="w-[104px] min-h-[70px] h-full relative">
         <Image fill sizes="100%" src={imgSrc} alt="image" />
       </div>

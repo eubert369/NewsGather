@@ -68,7 +68,13 @@ export default function Home({
 
   return (
     <div className="h-screen overflow-hidden">
-      {displaySearch && <SearchModal closeModal={setDisplaySearch} />}
+      {displaySearch && (
+        <SearchModal
+          closeModal={setDisplaySearch}
+          selectItem={setSelectedArticle}
+          openBlogItem={setDisplayViewModal}
+        />
+      )}
       {displayViewModal && (
         <ViewBlog
           title={selectedArticle.title}
