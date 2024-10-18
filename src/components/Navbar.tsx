@@ -3,15 +3,21 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-function Navbar({ openModal }: { openModal: (value: boolean) => void }) {
+function Navbar({
+  openModal,
+  openSidePane,
+}: {
+  openModal: (value: boolean) => void;
+  openSidePane: (value: boolean) => void;
+}) {
   const router = useRouter();
 
   return (
-    <div className="flex px-8 py-4 gap-[100px] items-center bg-[#282A2D]">
-      <Link className="font-sans font-bold text-2xl" href="/">
-        NewsViewer
+    <div className="flex justify-between xl:justify-start px-8 py-4 gap-[100px] items-center bg-[#282A2D]">
+      <Link className="font-serif font-bold text-lg xl:text-3xl" href="/">
+        NewsGather
       </Link>
-      <div className="w-full flex justify-between items-center px-[10px] py-[5px]">
+      <div className="w-full hidden xl:flex justify-between items-center px-[10px] py-[5px]">
         <div className="flex gap-[15px]">
           <Link
             className={`text-xl ${
@@ -86,6 +92,24 @@ function Navbar({ openModal }: { openModal: (value: boolean) => void }) {
             placeholder="Search"
           /> */}
         </div>
+      </div>
+      <div className="flex items-center gap-2 xl:hidden">
+        <button onClick={(): void => openModal(true)}>
+          <Image
+            width={20}
+            height={20}
+            src={"/assets/search-icon-white.svg"}
+            alt="icon"
+          />
+        </button>
+        <button onClick={() => openSidePane(true)}>
+          <Image
+            width={32}
+            height={32}
+            src={"/assets/menu-icon.svg"}
+            alt="icon"
+          />
+        </button>
       </div>
     </div>
   );

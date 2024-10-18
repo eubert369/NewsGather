@@ -7,7 +7,7 @@ import { responseObject, articleObject } from "@/pages";
 function SearchModal({
   closeModal,
   selectItem,
-  openBlogItem
+  openBlogItem,
 }: {
   closeModal: (value: boolean) => void;
   selectItem: (value: articleObject) => void;
@@ -67,7 +67,7 @@ function SearchModal({
 
   return (
     <div className="z-30 absolute w-full h-full bg-[#000000a4] flex justify-center items-center">
-      <div className="bg-white w-2/5 h-fit rounded-[25px] flex flex-col">
+      <div className="bg-white w-[90%] sm:w-3/5 lg:w-2/5 h-fit rounded-[25px] flex flex-col">
         <div className="flex justify-between px-[25px] pt-[25px] pb-[15px] border-b border-[#8A8A8A]">
           <div className="w-full flex gap-[10px]">
             <div className="w-[25px] h-[25px] relative">
