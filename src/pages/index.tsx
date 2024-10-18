@@ -45,7 +45,6 @@ export default function Home({
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const [displaySearch, setDisplaySearch] = useState<boolean>(false);
   const [displayViewModal, setDisplayViewModal] = useState<boolean>(false);
-  // const [articles, setArticles] = useState<responseObject[]>(response.data);
   const articles: responseObject[] = response.data;
   const [selectedArticle, setSelectedArticle] = useState<articleObject>({
     title: "",

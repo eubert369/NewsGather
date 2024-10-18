@@ -23,7 +23,7 @@ function SearchResultItem({
 }: props) {
   const handleClick = () => {
     selectItem({
-      title: title,
+      title: getArticle.title,
       description: getArticle.excerpt,
       url: getArticle.url,
       imgUrl: getArticle.thumbnail,
