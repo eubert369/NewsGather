@@ -3,6 +3,7 @@ import type { InferGetStaticPropsType, GetStaticProps } from "next";
 import Navbar from "@/components/Navbar";
 import BlogItem from "@/components/BlogItem";
 import ViewBlog from "@/components/ViewBlog";
+import SidePanel from "@/components/SidePanel";
 import moment from "moment";
 import SearchModal from "@/components/SearchModal";
 import { articleObject, responseObject } from ".";
@@ -28,6 +29,7 @@ export const getStaticProps = (async () => {
 function Sports({ response }: InferGetStaticPropsType<typeof getStaticProps>) {
   const [displaySearch, setDisplaySearch] = useState<boolean>(false);
   const [displayViewModal, setDisplayViewModal] = useState<boolean>(false);
+  const [openSidePanel, setOpenSidePanel] = useState<boolean>(false);
   const articles: responseObject[] = response.data;
   const [selectedArticle, setSelectedArticle] = useState<articleObject>({
     title: "",
@@ -50,7 +52,14 @@ function Sports({ response }: InferGetStaticPropsType<typeof getStaticProps>) {
 
   return (
     <div className="h-screen overflow-hidden">
-      {displaySearch && <SearchModal closeModal={setDisplaySearch} />}
+      {openSidePanel && <SidePanel openPanel={setOpenSidePanel} />}
+      {displaySearch && (
+        <SearchModal
+          closeModal={setDisplaySearch}
+          selectItem={setSelectedArticle}
+          openBlogItem={setDisplayViewModal}
+        />
+      )}
       {displayViewModal && (
         <ViewBlog
           title={selectedArticle.title}
@@ -61,7 +70,7 @@ function Sports({ response }: InferGetStaticPropsType<typeof getStaticProps>) {
           closeModal={setDisplayViewModal}
         />
       )}
-      <Navbar openModal={setDisplaySearch} />
+      <Navbar openModal={setDisplaySearch} openSidePane={setOpenSidePanel} />
       <div className="flex flex-col bg-white px-8 pt-8 gap-[20px] h-full overflow-auto">
         <h3 className="text-black font-bold text-[31px]">Sports</h3>
         <div className="flex flex-wrap justify-start gap-[30px] px-[10px] pt-[10px] pb-32 w-full h-fit">
