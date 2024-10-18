@@ -64,13 +64,16 @@ function Navbar({ openModal }: { openModal: (value: boolean) => void }) {
             Politics
           </Link>
         </div>
-        <div className="flex w-[285px] px-[12px] gap-[10px] py-2 bg-white rounded-lg cursor-text">
-          <Image
-            width={15}
-            height={15}
-            src={"/assets/search-icon.svg"}
-            alt="icon"
-          />
+        <div className="flex w-[285px] px-[12px] gap-[10px] py-2 bg-white rounded-lg cursor-text items-center">
+          <div className="min-w-[15px] min-h-[15px] w-[15px] h-[15px] relative">
+            <Image
+              fill
+              sizes="100%"
+              priority
+              src={"/assets/search-icon.svg"}
+              alt="icon"
+            />
+          </div>
           <button
             onClick={(): void => openModal(true)}
             className="flex w-full justify-between items-center cursor-text"

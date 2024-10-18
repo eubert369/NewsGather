@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import type { InferGetStaticPropsType, GetStaticProps } from "next";
 import Navbar from "@/components/Navbar";
 import BlogItem from "@/components/BlogItem";
 import ViewBlog from "@/components/ViewBlog";
@@ -21,10 +22,30 @@ export interface responseObject {
   date: string;
 }
 
-export default function Home() {
+export const getStaticProps = (async () => {
+  const request = await fetch(
+    "https://news-api14.p.rapidapi.com/v2/trendings?topic=General&language=en&country=ph",
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-rapidapi-key": "c669122751msh09833f2d21d4c96p158155jsn20321158a9c2",
+        "x-rapidapi-host": "news-api14.p.rapidapi.com",
+      },
+    }
+  );
+
+  const response = await request.json();
+
+  return { props: { response } };
+}) satisfies GetStaticProps<{ response: responseObject[] }>;
+
+export default function Home({
+  response,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   const [displaySearch, setDisplaySearch] = useState<boolean>(false);
   const [displayViewModal, setDisplayViewModal] = useState<boolean>(false);
-  const [articles, setArticles] = useState<articleObject[]>([]);
+  const articles: responseObject[] = response.data;
   const [selectedArticle, setSelectedArticle] = useState<articleObject>({
     title: "",
     description: "",
@@ -35,52 +56,24 @@ export default function Home() {
 
   const handleShortcutKey = useCallback((event: KeyboardEvent) => {
     if (event.ctrlKey && event.key === "k") {
+      event.preventDefault();
       setDisplaySearch(true);
     }
   }, []);
 
-  const fetchArticle = async () => {
-    try {
-      const request = await fetch(
-        "https://news-api14.p.rapidapi.com/v2/trendings?topic=General&language=en&country=ph",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "x-rapidapi-key":
-              "c669122751msh09833f2d21d4c96p158155jsn20321158a9c2",
-            "x-rapidapi-host": "news-api14.p.rapidapi.com",
-          },
-        }
-      );
-
-      const response = await request.json();
-      const data: articleObject[] = response.data.map(
-        (item: responseObject) => ({
-          title: item.title,
-          description: item.excerpt,
-          url: item.url,
-          imgUrl: item.thumbnail,
-          date: item.date,
-        })
-      );
-      setArticles(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  
-
-  useEffect(() => {
-    fetchArticle();
-  }, []);
   useEffect(() => {
     document.addEventListener("keydown", handleShortcutKey);
   }, [handleShortcutKey]);
 
   return (
     <div className="h-screen overflow-hidden">
-      {displaySearch && <SearchModal closeModal={setDisplaySearch} />}
+      {displaySearch && (
+        <SearchModal
+          closeModal={setDisplaySearch}
+          selectItem={setSelectedArticle}
+          openBlogItem={setDisplayViewModal}
+        />
+      )}
       {displayViewModal && (
         <ViewBlog
           title={selectedArticle.title}
@@ -99,7 +92,7 @@ export default function Home() {
             <BlogItem
               key={id}
               title={data.title}
-              imgSrc={data.imgUrl}
+              imgSrc={data.thumbnail}
               time={moment(data.date).fromNow()}
               displayModal={setDisplayViewModal}
               selectItem={setSelectedArticle}
