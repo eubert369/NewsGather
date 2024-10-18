@@ -30,9 +30,9 @@ function SearchModal({
           {
             method: "GET",
             headers: {
-              "x-rapidapi-key":
-                "c669122751msh09833f2d21d4c96p158155jsn20321158a9c2",
-              "x-rapidapi-host": "news-api14.p.rapidapi.com",
+              "Content-Type": "application/json",
+              "x-rapidapi-key": `${process.env.NEXT_PUBLIC_API_KEY}`,
+              "x-rapidapi-host": `${process.env.NEXT_PUBLIC_API_HOST}`,
             },
           }
         );
