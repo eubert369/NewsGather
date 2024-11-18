@@ -14,11 +14,11 @@ function Navbar({
 
   return (
     <div className="flex justify-between xl:justify-start px-8 py-4 gap-[100px] items-center bg-[#282A2D]">
-      <Link className="font-serif font-bold text-lg xl:text-3xl" href="/">
+      <Link className="font-serif font-bold text-lg text-white xl:text-3xl" href="/">
         NewsGather
       </Link>
       <div className="w-full hidden xl:flex justify-between items-center px-[10px] py-[5px]">
-        <div className="flex gap-[15px]">
+        <div className="flex gap-[15px] text-white">
           <Link
             className={`text-xl ${
               router.pathname == "/" ? "font-bold" : "hover:underline "
